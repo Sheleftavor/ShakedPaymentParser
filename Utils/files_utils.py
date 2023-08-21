@@ -6,7 +6,7 @@ Author: Shelef Tavor (21.08.23)
 """
 
 import json
-from typing import List
+from typing import List, Dict
 import os
 
 
@@ -19,7 +19,7 @@ def get_files_in_dir(dir_path: str) -> List[str]:
     return [file for file in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, file))]
 
 
-def open_json(json_path: str) -> dict:
+def open_json(json_path: str) -> Dict[str, Dict]:
     """
     Opens a given json
     :param json_path: The path to the json file
