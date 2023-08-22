@@ -10,5 +10,6 @@ PAYMENTS_DIR = r".\PaymentFiles"
 PAYMENT_CONF_JSON = r".\Configuration\payment_conf.json"
 
 # <----- Payment json ----->
-PAYMENT_JSON_BANK_FILE = "bank"
-PAYMENT_JSON_NORMAL_FILE = "normal"
+BANK_FILE = "bank"
+NORMAL_FILE = "normal"
+HEADER_LINE_NUMBER = "header_line_number"
