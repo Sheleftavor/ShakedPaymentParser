@@ -9,6 +9,7 @@ from Configuration import conf, consts
 from Utils import files_utils
 from IO.base_io import BaseIO
 from DTO.payment_data import PaymentData
+from Parsers.bank_parser import BankParser
 
 
 class Merger:
@@ -24,53 +25,16 @@ class Merger:
         self._io = io
         self._payment_data = PaymentData(files_utils.open_json(conf.PAYMENT_CONF_JSON),
                                          files_utils.get_files_in_dir(conf.PAYMENTS_DIR))
+        bank_parser = BankParser(self._payment_data)
+        parsed_data = bank_parser.start_parsing()
+
 
     def start_parsing(self):
         """
         Starts parsing the excel files
         """
         self._io.send(consts.WELCOME_MESSAGE)
-        self.__parse_bank_file(self.__get_bank_file())
 
-    def __get_bank_file(self) -> str:
-        """
-        Gets the bank file from the json and if it does not have it, it asks to choose one
-        :return: The bank file
-        """
-        if self._payment_data.payment_json[conf.BANK_FILE] not in self._payment_data.payment_files:
-            self._io.send(consts.BANK_FILE_NOT_FOUND)
-            self.__show_payment_files()
-            bank_file_index = self._io.recv(prompt=consts.BANK_FILE_CHOICE_PROMPT, confirm=True)
-            while not bank_file_index.isnumeric() or (
-                    int(bank_file_index) < 1 or int(bank_file_index) > len(self._payment_data.payment_files)):
-                bank_file_index = self._io.recv(prompt=consts.INVALID_CHOICE, confirm=True)
-            bank_file_name = self._payment_data.payment_files[int(bank_file_index) - 1]
-            # Adding bank file name to json
-            self._payment_data.payment_json[conf.BANK_FILE][bank_file_name] = {}
-            return bank_file_name
-        else:
-            return self._payment_data.payment_files[
-                self._payment_data.payment_files.index(self._payment_data.payment_json[conf.BANK_FILE])]
-
-    def __parse_bank_file(self, bank_file: str):
-        """
-        Parses the bank payment file
-        :param bank_file: The bank file to parse
-        """
-
-    def __get_header_line_number(self, payment_file: str) -> int:
-        """
-        Gets the excel file header line number and if it does not have it, it asks for one
-        :param payment_file: The payment file to get the header line number for
-        :return: The header line number
-        """
-        if self._payment_data.payment_json[conf.BANK_FILE][payment_file].get(conf.HEADER_LINE_NUMBER) is None:
-            header_line_number = self._io.recv(prompt=consts.HEADER_LINE_NUMBER_NOT_FOUND, confirm=True)
-            while not header_line_number.isnumeric():
-                header_line_number = self._io.recv(prompt=consts.INVALID_CHOICE, confirm=True)
-            # TODO add line number
-        else:
-            return self._payment_data.payment_json[conf.BANK_FILE][payment_file].get(conf.HEADER_LINE_NUMBER)
 
     def __show_payment_files(self):
         """
