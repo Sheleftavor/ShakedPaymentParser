@@ -5,13 +5,13 @@ Purpose: CLI part for the parser
 Author: Shelef Tavor (20.08.23)
 """
 
-from parser import Parser
+from merger import Merger
 from IO.console_io import ConsoleIO
 
 
 def main():
     """ The main function of the class """
-    parser = Parser(ConsoleIO())
+    parser = Merger(ConsoleIO())
     parser.start_parsing()
 
 
