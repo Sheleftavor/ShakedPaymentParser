@@ -19,7 +19,8 @@ class BankParser(BaseParser):
         :return: The parsed stuff from the file
         """
         bank_file = self.__get_bank_file()
-        header_line_number = self.__get_header_line_number(bank_file)
+        header_line_number = self._get_header_line_number(bank_file)
+        print(self._payment_data.payment_json)
 
     def __get_bank_file(self) -> str:
         """
@@ -28,10 +29,10 @@ class BankParser(BaseParser):
         """
         if self._payment_data.payment_json[self.NAME] not in self._payment_data.payment_files:
             self._io.send(consts.BANK_FILE_NOT_FOUND)
-            self.__show_payment_files()
+            self._show_payment_files()
             bank_file_index = self._io.recv(prompt=consts.BANK_FILE_CHOICE_PROMPT, confirm=True)
-            while not bank_file_index.isnumeric() or (
-                    int(bank_file_index) < 1 or int(bank_file_index) > len(self._payment_data.payment_files)):
+            while not bank_file_index.isnumeric() or not (
+                    0 < int(bank_file_index) <= len(self._payment_data.payment_files)):
                 bank_file_index = self._io.recv(prompt=consts.INVALID_CHOICE, confirm=True)
             bank_file_name = self._payment_data.payment_files[int(bank_file_index) - 1]
             # Adding bank file name to json
